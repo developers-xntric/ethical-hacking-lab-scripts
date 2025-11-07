@@ -7,11 +7,13 @@ import sys
 
 
 def attempt_login(url, username, password):
+    session = requests.Session()
+
     try:
-        response = requests.session.post(
+        response = session.post(
             url,
             data={"username": username, "password": password},
-            timeout=5,  # Prevent hanging on failed attempts
+            timeout=5,
         )
 
         if success_indicator in response.text:  # type: ignore # Adjust based on application behavior
@@ -32,11 +34,10 @@ def main():
     url = sys.argv[1]
     username_file = sys.argv[2]
     password_file = sys.argv[3]
-    # Load credentials
+
     usernames = [line.strip() for line in open(username_file) if line.strip()]
     passwords = [line.strip() for line in open(password_file) if line.strip()]
-    session = requests.Session()
-    # Check each username with each password
+
     for username in usernames:
         print(f"Testing: {username}")
         for password in passwords:
